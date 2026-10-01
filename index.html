@@ -3,85 +3,662 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
 <title>Why Should You Complete the Staff Survey?</title>
- 
-style.css
+
+<style>
+
+:root{
+--nhs-blue:#005EB8;
+--nhs-dark:#003087;
+--nhs-green:#007F3B;
+--nhs-red:#DA291C;
+--nhs-grey:#768692;
+--nhs-light:#F4F7F9;
+--nhs-amber:#FFB81C;
+}
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Segoe UI,Arial,sans-serif;
+background:var(--nhs-light);
+color:#212b32;
+}
+
+header{
+background:var(--nhs-blue);
+color:white;
+padding:30px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:25px;
+}
+
+.card{
+background:white;
+padding:24px;
+margin-bottom:20px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+h1,h2,h3{
+margin-top:0;
+}
+
+.metric-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+margin-top:20px;
+}
+
+.metric{
+background:#eef5fb;
+border-left:5px solid var(--nhs-blue);
+padding:15px;
+border-radius:8px;
+}
+
+.metric-label{
+font-size:14px;
+color:#666;
+}
+
+.metric-value{
+font-size:32px;
+font-weight:bold;
+color:var(--nhs-dark);
+}
+
+.question{
+border:1px solid #d9e1e8;
+padding:18px;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+.bar{
+height:18px;
+background:#ddd;
+border-radius:9px;
+overflow:hidden;
+margin:4px 0 10px 0;
+}
+
+.fill{
+height:100%;
+}
+
+.pos{
+background:var(--nhs-green);
+}
+
+.neu{
+background:var(--nhs-grey);
+}
+
+.neg{
+background:var(--nhs-red);
+}
+
+.comment{
+background:#f5f8fb;
+border-left:4px solid var(--nhs-grey);
+padding:10px;
+margin:6px 0;
+}
+
+select{
+width:100%;
+padding:10px;
+margin-top:10px;
+}
+
+button{
+background:var(--nhs-blue);
+color:white;
+border:none;
+padding:12px 22px;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:var(--nhs-dark);
+}
+
+.hidden{
+display:none;
+}
+
+.highlight{
+background:#fff8df;
+border-left:5px solid var(--nhs-amber);
+padding:16px;
+}
+
+.voice-summary{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.voice-box{
+background:#eef5fb;
+padding:20px;
+text-align:center;
+border-radius:10px;
+}
+
+.big-number{
+font-size:60px;
+font-weight:bold;
+color:var(--nhs-blue);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:10px;
+border:1px solid #ddd;
+}
+
+th{
+background:#eef4f8;
+}
+
+.final{
+text-align:center;
+}
+
+</style>
 </head>
- 
+
 <body>
- 
+
 <header>
 <h1>Why should you complete the Staff Survey?</h1>
-<p>R&D Leadership Decision Simulation</p>
+<p>R&D Leadership Simulation</p>
 </header>
- 
+
 <div class="container">
- 
+
 <div id="game">
- 
+
 <div class="card">
- 
+
 <p>
-Imagine you are responsible for deciding where support and
-improvement efforts should be focused across an R&D department.
+Imagine you're part of the leadership team responsible for improving staff experience.
 </p>
- 
+
 <p>
-The only information available is the feedback staff choose to
-share.
+You can only focus on a limited number of priorities.
+The decisions you make will influence:
 </p>
- 
-<p>
-You have 20 Leadership Points available.
-</p>
- 
-<h3>
-Remaining Leadership Points:
-<span id="remaining">20</span>
-</h3>
- 
+
 <div class="metric-grid">
- 
+
 <div class="metric">
 <div class="metric-label">Engagement</div>
 <div class="metric-value">60</div>
 </div>
- 
+
 <div class="metric">
 <div class="metric-label">Retention</div>
 <div class="metric-value">60</div>
 </div>
- 
+
 <div class="metric">
 <div class="metric-label">Innovation</div>
 <div class="metric-value">60</div>
 </div>
- 
+
 <div class="metric">
 <div class="metric-label">Wellbeing</div>
 <div class="metric-value">60</div>
 </div>
- 
+
 </div>
- 
+
+<p style="margin-top:20px;">
+You have <strong>20 Leadership Points</strong> available.
+</p>
+
+<h3>
+Remaining Leadership Points:
+<span id="remaining">20</span>
+</h3>
+
 </div>
- 
+
 <div id="questions"></div>
- 
+
 <div class="card">
 <button onclick="submitPlan()">
 Implement Improvement Plan
 </button>
 </div>
- 
+
 </div>
- 
+
 <div id="results" class="hidden"></div>
- 
+
 </div>
- 
-script.jsscript>
- 
+
+<script>
+
+const themes = [
+
+{
+name:"There are frequent opportunities for me to show initiative in my role",
+positive:70,
+neutral:12,
+negative:18,
+comments:[
+"I regularly lead improvements.",
+"I feel empowered to suggest changes.",
+"My ideas are listened to."
+]
+},
+
+{
+name:"I am able to access training and development opportunities",
+positive:68,
+neutral:13,
+negative:19,
+comments:[
+"I found a useful course recently.",
+"Training resources are available.",
+"I completed the training I needed."
+]
+},
+
+{
+name:"Communication between teams is effective",
+positive:62,
+neutral:18,
+negative:20,
+comments:[
+"Information is shared clearly.",
+"Communication has improved.",
+"Team updates are useful."
+]
+},
+
+{
+name:"My work is recognised and valued",
+positive:58,
+neutral:22,
+negative:20,
+comments:[
+"My contribution is recognised.",
+"Good work is acknowledged.",
+"I receive positive feedback."
+]
+},
+
+{
+name:"My organisation takes positive action on health and wellbeing",
+positive:60,
+neutral:20,
+negative:20,
+comments:[
+"Wellbeing resources are available.",
+"Support has improved.",
+"The wellbeing programme is useful."
+]
+}
+
+];
+
+const questionsDiv = document.getElementById("questions");
+
+themes.forEach((theme,index)=>{
+
+questionsDiv.innerHTML += `
+
+<div class="card question">
+
+<h3>${theme.name}</h3>
+
+Positive (${theme.positive}%)
+<div class="bar">
+<div class="fill pos" style="width:${theme.positive}%"></div>
+</div>
+
+Neither Agree Nor Disagree (${theme.neutral}%)
+<div class="bar">
+<div class="fill neu" style="width:${theme.neutral}%"></div>
+</div>
+
+Negative (${theme.negative}%)
+<div class="bar">
+<div class="fill neg" style="width:${theme.negative}%"></div>
+</div>
+
+<h4>Comments Received</h4>
+
+${theme.comments.map(c=>`<div class="comment">${c}</div>`).join("")}
+
+<label>Leadership Points</label>
+
+<select id="allocation${index}">
+<option value="0">0</option>
+<option value="2">2</option>
+<option value="4">4</option>
+<option value="6">6</option>
+<option value="8">8</option>
+<option value="10">10</option>
+</select>
+
+</div>
+
+`;
+
+});
+
+document.querySelectorAll("select").forEach(s=>{
+s.addEventListener("change",updatePoints);
+});
+
+function updatePoints(){
+
+let total=0;
+
+document.querySelectorAll("select").forEach(s=>{
+total += parseInt(s.value);
+});
+
+document.getElementById("remaining").textContent =
+20-total;
+
+}
+
+function submitPlan(){
+
+let total=0;
+
+document.querySelectorAll("select").forEach(s=>{
+total += parseInt(s.value);
+});
+
+if(total !== 20){
+alert("Please allocate all 20 Leadership Points.");
+return;
+}
+
+document.getElementById("game").classList.add("hidden");
+
+document.getElementById("results").classList.remove("hidden");
+
+document.getElementById("results").innerHTML = `
+
+<div class="card">
+
+<h2>Improvement Plan Delivered</h2>
+
+<div class="comment">
+Action plans launched.
+</div>
+
+<div class="comment">
+Managers report positive early feedback.
+</div>
+
+<div class="comment">
+Improvement initiatives implemented.
+</div>
+
+<p>
+It appears the organisation is moving in the right direction.
+</p>
+
+<button onclick="showReveal()">
+Continue
+</button>
+
+</div>
+
+`;
+
+}
+
+function showReveal(){
+
+document.getElementById("results").innerHTML = `
+
+<div class="card">
+
+<h1>But Did The Responses Represent Everyone?</h1>
+
+<p>
+You made decisions using the information available to you.
+</p>
+
+<p>
+Would you have made the same decisions if different voices had been represented?
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>Responses Received Compared With Department Size</h2>
+
+<div class="voice-summary">
+
+<div class="voice-box">
+<div class="big-number">64</div>
+<div>Responses Received</div>
+</div>
+
+<div class="voice-box">
+<div class="big-number">410</div>
+<div>Total Staff</div>
+</div>
+
+</div>
+
+<div class="highlight">
+346 experiences were not represented in the information available to you.
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>If These Responses Had Represented The Whole Department...</h2>
+
+<table>
+
+<tr>
+<th>Question</th>
+<th>You Saw</th>
+<th>Possible Wider Picture</th>
+</tr>
+
+<tr>
+<td>Opportunities to show initiative</td>
+<td>70 / 12 / 18</td>
+<td>39 / 41 / 20</td>
+</tr>
+
+<tr>
+<td>Training & development</td>
+<td>68 / 13 / 19</td>
+<td>28 / 34 / 38</td>
+</tr>
+
+<tr>
+<td>Communication</td>
+<td>62 / 18 / 20</td>
+<td>35 / 39 / 26</td>
+</tr>
+
+<tr>
+<td>Recognition</td>
+<td>58 / 22 / 20</td>
+<td>33 / 40 / 27</td>
+</tr>
+
+<tr>
+<td>Wellbeing</td>
+<td>60 / 20 / 20</td>
+<td>31 / 37 / 32</td>
+</tr>
+
+</table>
+
+<p><small>Positive / Neutral / Negative (%)</small></p>
+
+</div>
+
+<div class="card">
+
+<h2>Neutral ≠ Nothing</h2>
+
+<p>
+It's easy to assume a neutral response means everything is fine.
+</p>
+
+<div class="comment">
+"I don't know enough to answer."
+</div>
+
+<div class="comment">
+"I've had both positive and negative experiences."
+</div>
+
+<div class="comment">
+"I'm unsure what support is available."
+</div>
+
+<div class="comment">
+"The question doesn't really fit my role."
+</div>
+
+<div class="comment">
+"I've never discussed this topic with my manager."
+</div>
+
+<p>
+A neutral response still contains information.
+</p>
+
+<p>
+Large neutral groups can indicate uncertainty, inconsistency, lack of awareness or disengagement.
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>The Voices You Didn't Hear</h2>
+
+<div class="comment">
+"I've never been asked for my ideas."
+</div>
+
+<div class="comment">
+"I don't know how to access study leave."
+</div>
+
+<div class="comment">
+"Communication differs between teams."
+</div>
+
+<div class="comment">
+"Recognition depends on who you work with."
+</div>
+
+<div class="comment">
+"I'm not aware of wellbeing support available to me."
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>What Happened Next?</h2>
+
+<p>
+Some staff could not see their experiences reflected in the priorities chosen.
+</p>
+
+<p>
+Some became less confident that completing the survey would make a difference.
+</p>
+
+<h3 style="color:#DA291C;">
+64 responses → 49 responses
+</h3>
+
+<p>
+The picture available to decision-makers became even less representative.
+</p>
+
+</div>
+
+<div class="card final">
+
+<h1>Why you should complete the Staff Survey</h1>
+
+<p>
+Throughout this exercise, you made reasonable decisions using the information available to you.
+</p>
+
+<p>
+The challenge was not poor decision-making.
+</p>
+
+<p>
+The challenge was that the voices being heard did not necessarily represent everyone.
+</p>
+
+<p>
+When experiences are missing, priorities can be misunderstood.
+Resources can be directed towards the wrong problems.
+</p>
+
+<p>
+A survey response contributes to the picture decision-makers see.
+</p>
+
+<p>
+If your experience is missing, that picture changes.
+</p>
+
+<div class="highlight">
+One additional response may not change a decision.<br>
+Hundreds of missing responses can change the entire picture.
+</div>
+
+<h2 style="color:#005EB8;">
+Every Voice Changes The Picture
+</h2>
+
+<button onclick="location.reload()">
+Play Again
+</button>
+
+</div>
+
+`;
+
+}
+
+</script>
+
 </body>
 </html>
